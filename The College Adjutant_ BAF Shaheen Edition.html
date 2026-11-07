@@ -1,0 +1,512 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>The College Adjutant: BAF Shaheen Edition</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          display: ['Cinzel', 'Georgia', 'serif'],
+          bn: ['"Hind Siliguri"', '"Noto Sans Bengali"', 'system-ui', 'sans-serif']
+        }
+      }
+    }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" defer></script>
+<style>
+  /* Layout: one centered mobile column over a sky gradient. Dark navy panels carry the
+     content, a maroon button and a maroon Attention badge are the only warm blocks, and
+     amber marks whatever is active or counted. Single committed look, so no dark variant.
+     Custom class names avoid Font Awesome's own (.fa, .fab, .fas, .far ...). */
+  :root {
+    --sky-1: #38bdf8;
+    --sky-2: #0284c7;
+    --sky-3: #0369a1;
+    --panel: rgba(3, 56, 104, 0.95);
+    --panel-edge: rgba(255, 255, 255, 0.28);
+    --pill: #052f5c;
+    --amber: #f59e0b;
+    --yellow: #facc15;
+    --maroon: #991b1b;
+    --maroon-edge: rgba(254, 202, 202, 0.9);
+    --toast-bg: #05294f;
+  }
+  body {
+    background-color: var(--sky-2);
+    background-image: linear-gradient(to bottom, var(--sky-1), var(--sky-2), var(--sky-3));
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    color: #ffffff;
+    font-family: 'Hind Siliguri', 'Noto Sans Bengali', system-ui, sans-serif;
+  }
+  .page {
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 2rem 7rem;
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--panel-edge);
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 28px rgba(2, 36, 72, 0.35);
+  }
+  .tag-pill {
+    background: var(--pill);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 0.6rem;
+    box-shadow: 0 4px 12px rgba(2, 36, 72, 0.3);
+  }
+  .title-shadow { text-shadow: 0 3px 5px rgba(2, 32, 71, 0.55); }
+  .overlay {
+    padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px))
+             max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  }
+
+  /* Name + button pill */
+  .name-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 4px 4px 16px;
+    background: #f8fafc;
+    border: 3px solid var(--yellow);
+    border-radius: 9999px;
+  }
+  .name-pill:focus-within { box-shadow: 0 0 0 4px rgba(250, 204, 21, 0.4); }
+  .start-btn {
+    flex: none;
+    padding: 10px 16px;
+    border-radius: 9999px;
+    background-image: linear-gradient(to right, #f59e0b, #eab308);
+    color: #1c1917;
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(120, 53, 15, 0.3);
+    transition: filter 0.15s, transform 0.1s;
+  }
+  .start-btn:hover { filter: brightness(1.08); }
+  .start-btn:active { transform: scale(0.97); }
+
+  /* Steps */
+  .step-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 9999px;
+    background: #7dd3fc;
+    color: #0c4a6e;
+    font-size: 14px;
+    font-weight: 700;
+    transition: background 0.15s, box-shadow 0.15s;
+  }
+  .step:hover .step-badge { background: #bae6fd; }
+  .step-label { font-size: 12.5px; font-weight: 600; line-height: 1.2; color: #ffffff; }
+  .step[aria-pressed="true"] .step-badge { background: var(--yellow); color: #1e293b; box-shadow: 0 0 0 3px #ffffff; }
+  .step[aria-pressed="true"] .step-label { color: var(--yellow); font-weight: 700; }
+
+  /* College diary button */
+  .diary-btn {
+    background: var(--maroon);
+    border: 2px solid var(--maroon-edge);
+    border-radius: 0.9rem;
+    box-shadow: 0 6px 16px rgba(80, 10, 10, 0.3);
+    transition: filter 0.15s, transform 0.1s;
+  }
+  .diary-btn:hover { filter: brightness(1.12); }
+  .diary-btn:active { transform: scale(0.98); }
+
+  /* Attention badge */
+  .attn-fab {
+    position: fixed;
+    right: calc(16px + env(safe-area-inset-right, 0px));
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    z-index: 40;
+    background: var(--maroon);
+    border: 3px solid var(--maroon-edge);
+    color: #ffffff;
+    white-space: nowrap;
+    box-shadow: 0 8px 20px rgba(80, 10, 10, 0.35);
+  }
+
+  /* Step notification */
+  #toast {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: calc(12px + env(safe-area-inset-top, 0px));
+    z-index: 60;
+    display: flex;
+    justify-content: center;
+    padding: 0 max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px));
+    pointer-events: none;
+  }
+  .toast-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 24rem;
+    padding: 12px;
+    background: var(--toast-bg);
+    border: 2px solid var(--amber);
+    border-radius: 1rem;
+    box-shadow: 0 16px 40px rgba(2, 24, 50, 0.45);
+    opacity: 0;
+    transform: translateY(-14px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  #toast.show .toast-card { opacity: 1; transform: none; }
+  .toast-icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 0.6rem;
+    background: var(--amber);
+    color: #1e293b;
+    font-size: 18px;
+  }
+  .toast-title { color: var(--amber); font-weight: 700; font-size: 15px; line-height: 1.25; }
+  .toast-text { margin-top: 2px; color: #ffffff; font-weight: 600; font-size: 13px; line-height: 1.35; }
+
+  :focus-visible { outline: 3px solid #fde68a; outline-offset: 2px; }
+  .name-pill input:focus-visible { outline: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-bounce, .animate-pulse { animation: none !important; }
+    .toast-card { transition: none; transform: none; }
+  }
+</style>
+
+<div class="page">
+  <main class="mx-auto flex w-full max-w-md flex-col items-center gap-6 font-bn">
+
+    <!-- LOGO -->
+    <section class="flex flex-col items-center pt-2" aria-label="Logo">
+      <div class="relative h-44 w-44 sm:h-48 sm:w-48">
+        <div class="absolute -inset-5 animate-pulse rounded-full bg-white/60 blur-2xl" aria-hidden="true"></div>
+        <div class="absolute -inset-2 animate-pulse rounded-full bg-sky-100/50 blur-xl" style="animation-delay: .7s" aria-hidden="true"></div>
+        <div class="relative h-full w-full overflow-hidden rounded-full border-2 border-white/60 bg-white/25 shadow-2xl">
+          <img id="logoImg" alt="The College Adjutant logo" class="h-full w-full object-cover">
+        </div>
+      </div>
+    </section>
+
+    <!-- HEADER -->
+    <header class="flex flex-col items-center text-center">
+      <h1 class="font-display title-shadow">
+        <span class="block text-sm font-bold tracking-[0.55em] text-sky-100">T H E</span>
+        <span class="block text-5xl font-black tracking-wide text-white sm:text-[3.4rem]">ADJUTANT</span>
+      </h1>
+      <p class="tag-pill mt-3 flex flex-wrap justify-center gap-x-2 gap-y-0.5 px-4 py-1.5 text-[11.5px] font-bold tracking-[0.12em] text-white sm:text-xs">
+        <span class="whitespace-nowrap">YOUR DISCIPLINE</span><span aria-hidden="true">|</span><span class="whitespace-nowrap">YOUR HONOUR</span><span aria-hidden="true">|</span><span class="whitespace-nowrap">YOUR COMMAND</span>
+      </p>
+      <p class="title-shadow mt-4 text-balance text-lg font-bold text-yellow-300">Make The Shaheen You've Always Dreamt Of</p>
+    </header>
+
+    <!-- NAME + GENDER + COUNTER -->
+    <section class="panel w-full p-5" aria-label="Start">
+      <form id="startForm" novalidate class="flex flex-col gap-3">
+        <h2 class="text-center text-[15px] font-bold leading-snug">দাফতারিক নথির জন্য পূর্ণ নাম প্রদান করুন</h2>
+        <div class="name-pill">
+          <label for="playerName" class="sr-only">আপনার নাম</label>
+          <input id="playerName" name="playerName" type="text" maxlength="30" autocomplete="off"
+                 placeholder="আপনার নাম লিখুন..."
+                 class="min-w-0 flex-1 bg-transparent py-2 text-base font-bold text-slate-900 placeholder:font-medium placeholder:text-slate-400">
+          <button type="submit" class="start-btn">খেলা শুরু করুন</button>
+        </div>
+        <fieldset class="grid grid-cols-2 gap-2">
+          <legend class="sr-only">আপনি ছেলে নাকি মেয়ে?</legend>
+          <label class="cursor-pointer">
+            <input type="radio" name="gender" value="male" class="peer sr-only">
+            <span class="flex items-center justify-center gap-2 rounded-full border border-white/30 bg-white/5 px-3 py-2 text-sm font-semibold text-sky-100 transition hover:bg-white/10 peer-checked:border-yellow-300 peer-checked:bg-yellow-400 peer-checked:text-slate-900 peer-focus-visible:outline peer-focus-visible:outline-[3px] peer-focus-visible:outline-offset-2 peer-focus-visible:outline-yellow-200">
+              <i class="fa-solid fa-mars" aria-hidden="true"></i><span>ছেলে <span class="text-xs font-medium opacity-80">Male</span></span>
+            </span>
+          </label>
+          <label class="cursor-pointer">
+            <input type="radio" name="gender" value="female" class="peer sr-only">
+            <span class="flex items-center justify-center gap-2 rounded-full border border-white/30 bg-white/5 px-3 py-2 text-sm font-semibold text-sky-100 transition hover:bg-white/10 peer-checked:border-yellow-300 peer-checked:bg-yellow-400 peer-checked:text-slate-900 peer-focus-visible:outline peer-focus-visible:outline-[3px] peer-focus-visible:outline-offset-2 peer-focus-visible:outline-yellow-200">
+              <i class="fa-solid fa-venus" aria-hidden="true"></i><span>মেয়ে <span class="text-xs font-medium opacity-80">Female</span></span>
+            </span>
+          </label>
+        </fieldset>
+        <p id="formError" role="alert" hidden class="rounded-xl bg-rose-600 px-3 py-2 text-sm font-medium text-white"></p>
+      </form>
+      <p class="mt-4 text-center text-[13px] font-bold" aria-live="polite">
+        Total appointed Adjutants: <span id="counter" class="tabular-nums text-yellow-300">0</span>
+      </p>
+    </section>
+
+    <!-- 5 STEPS -->
+    <section class="panel w-full px-3 py-4" aria-label="খেলার ৫টি ধাপ">
+      <ol class="grid grid-cols-5 gap-1">
+        <li><button type="button" class="step flex w-full flex-col items-center gap-2 rounded-xl px-0.5 py-1 text-center" data-step="0" aria-pressed="false">
+          <span class="step-badge" aria-hidden="true">১</span><span class="step-label">কলেজ বাছাই</span></button></li>
+        <li><button type="button" class="step flex w-full flex-col items-center gap-2 rounded-xl px-0.5 py-1 text-center" data-step="1" aria-pressed="false">
+          <span class="step-badge" aria-hidden="true">২</span><span class="step-label">নিয়োগপত্র</span></button></li>
+        <li><button type="button" class="step flex w-full flex-col items-center gap-2 rounded-xl px-0.5 py-1 text-center" data-step="2" aria-pressed="false">
+          <span class="step-badge" aria-hidden="true">৩</span><span class="step-label">অধ্যক্ষের সাথে পরিচয়</span></button></li>
+        <li><button type="button" class="step flex w-full flex-col items-center gap-2 rounded-xl px-0.5 py-1 text-center" data-step="3" aria-pressed="false">
+          <span class="step-badge" aria-hidden="true">৪</span><span class="step-label">অফিসে ১০ টা কাজ</span></button></li>
+        <li><button type="button" class="step flex w-full flex-col items-center gap-2 rounded-xl px-0.5 py-1 text-center" data-step="4" aria-pressed="false">
+          <span class="step-badge" aria-hidden="true">৫</span><span class="step-label">আপনার শাহীন</span></button></li>
+      </ol>
+    </section>
+
+    <!-- COLLEGE DIARY BUTTON -->
+    <button type="button" data-open="diaryModal"
+            class="diary-btn flex w-full max-w-xs items-center justify-center gap-3 px-5 py-3.5 text-lg font-bold text-white">
+      <span aria-hidden="true">📖</span>
+      <span>কলেজ ডায়েরি</span>
+    </button>
+
+    <!-- DEVELOPER BOX (avatar on the left) -->
+    <section class="panel flex w-full max-w-xs items-center gap-3.5 p-4" aria-label="Developer">
+      <img id="avatarImg" alt="Muhaiminul Islam Mahim" class="h-14 w-14 shrink-0 rounded-full border-2 border-yellow-400 object-cover">
+      <div class="min-w-0 flex-1 space-y-1.5 text-xs">
+        <p class="break-words text-[13px] font-bold text-yellow-300">Muhaiminul Islam Mahim</p>
+        <p class="flex items-center gap-2"><i class="fa-brands fa-instagram text-lg text-pink-400" aria-hidden="true"></i><span class="break-all text-sky-200">@your_username</span></p>
+        <p class="flex items-center gap-2"><i class="fa-brands fa-facebook text-lg text-blue-400" aria-hidden="true"></i><span>Inspired by: <span class="font-semibold text-yellow-300">Rommocadet</span></span></p>
+        <div class="flex flex-wrap gap-1.5 pt-0.5">
+          <span class="inline-flex items-center gap-1 rounded-md border border-white/20 bg-white/5 px-2 py-1 text-[11px] font-semibold text-sky-200">
+            <svg viewBox="0 0 24 24" class="h-3 w-3" aria-hidden="true"><path d="M12 2c.6 5.6 4.4 9.4 10 10-5.6.6-9.4 4.4-10 10-.6-5.6-4.4-9.4-10-10 5.6-.6 9.4-4.4 10-10z" fill="#60a5fa"/></svg>Gemini
+          </span>
+          <span class="inline-flex items-center gap-1 rounded-md border border-white/20 bg-white/5 px-2 py-1 text-[11px] font-semibold text-sky-200">
+            <i class="fa-brands fa-github" aria-hidden="true"></i>GitHub
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <p class="title-shadow text-center text-xs font-medium text-white/90">BAF Shaheen College Game © 2026 | Instagram Web Link Edition</p>
+  </main>
+</div>
+
+<!-- FLOATING ATTENTION BADGE -->
+<button type="button" id="attnBtn" data-open="attnModal" aria-label="Attention"
+        class="attn-fab flex animate-bounce items-center gap-2 rounded-full px-4 py-2.5 font-bn text-[15px] font-bold">
+  <i class="fa-solid fa-triangle-exclamation text-amber-300" aria-hidden="true"></i>
+  <span>Attention</span>
+</button>
+
+<!-- STEP NOTIFICATION (shows 3 seconds) -->
+<div id="toast" hidden role="status" aria-live="polite" class="font-bn">
+  <div class="toast-card">
+    <span class="toast-icon"><i class="fa-solid fa-circle-info" aria-hidden="true"></i></span>
+    <div class="min-w-0">
+      <p id="toastTitle" class="toast-title"></p>
+      <p id="toastText" class="toast-text"></p>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: College Diary -->
+<div id="diaryModal" hidden role="dialog" aria-modal="true" aria-labelledby="diaryTitle"
+     class="overlay fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm font-bn">
+  <div class="max-h-full w-full max-w-md overflow-y-auto rounded-3xl bg-white text-slate-800 shadow-2xl">
+    <div class="flex items-center gap-3 bg-[#991b1b] px-5 py-4 text-white">
+      <span aria-hidden="true">📖</span>
+      <h2 id="diaryTitle" class="text-lg font-bold">কলেজ ডায়েরি</h2>
+      <button type="button" data-close aria-label="বন্ধ করুন" class="ml-auto flex h-9 w-9 items-center justify-center rounded-full hover:bg-white/15">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="space-y-4 px-5 py-5 text-[15px] leading-relaxed">
+      <p>কলেজ ডায়েরি হলো একজন Adjutant-এর শৃঙ্খলা ও অগ্রগতির খাতা। প্রতিটি ধাপে আপনি কী সিদ্ধান্ত নিলেন এবং কতটা নিয়ম মেনে চললেন, তার হিসাব এখানে জমা হবে।</p>
+      <ul class="space-y-2">
+        <li class="flex gap-3"><i class="fa-solid fa-shield-halved mt-1 text-[#991b1b]" aria-hidden="true"></i><span><b>শৃঙ্খলা:</b> নিয়ম ও সময়ানুবর্তিতা মেনে চলার রেকর্ড।</span></li>
+        <li class="flex gap-3"><i class="fa-solid fa-route mt-1 text-[#991b1b]" aria-hidden="true"></i><span><b>অগ্রগতি:</b> ৫টি ধাপের মধ্যে আপনি এখন কোথায় আছেন।</span></li>
+        <li class="flex gap-3"><i class="fa-solid fa-pen-to-square mt-1 text-[#991b1b]" aria-hidden="true"></i><span><b>সিদ্ধান্ত:</b> প্রতিটি কাজে আপনার নেওয়া পদক্ষেপের তালিকা।</span></li>
+      </ul>
+      <div>
+        <div class="mb-1.5 flex items-center justify-between text-sm font-semibold"><span>আপনার অগ্রগতি</span><span class="tabular-nums">0 / 5</span></div>
+        <div class="grid grid-cols-5 gap-1.5" aria-hidden="true">
+          <span class="h-2 rounded-full bg-slate-200"></span><span class="h-2 rounded-full bg-slate-200"></span><span class="h-2 rounded-full bg-slate-200"></span><span class="h-2 rounded-full bg-slate-200"></span><span class="h-2 rounded-full bg-slate-200"></span>
+        </div>
+        <p class="mt-2 text-sm text-slate-500">এখনো কোনো ধাপ সম্পন্ন হয়নি।</p>
+      </div>
+      <button type="button" data-close class="w-full rounded-lg bg-[#991b1b] py-3 font-semibold text-white hover:brightness-110">বন্ধ করুন</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Attention disclaimer -->
+<div id="attnModal" hidden role="dialog" aria-modal="true" aria-labelledby="attnTitle"
+     class="overlay fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm font-bn">
+  <div class="max-h-full w-full max-w-md overflow-y-auto rounded-3xl border border-slate-700 bg-slate-900 p-6 text-slate-100 shadow-2xl">
+    <div class="mb-3 flex items-center gap-3">
+      <i class="fa-solid fa-triangle-exclamation text-2xl text-red-500" aria-hidden="true"></i>
+      <h2 id="attnTitle" class="text-xl font-bold">Attention</h2>
+    </div>
+    <p class="leading-relaxed">এই গেমটি সম্পূর্ণ মজা ও বিনোদনের জন্য তৈরি। এখানকার চরিত্র, ঘটনা ও সংলাপ কাল্পনিক। কোনো ব্যক্তি বা প্রতিষ্ঠানকে হেয় করা বা আঘাত করা এর উদ্দেশ্য নয়।</p>
+    <p class="mt-3 text-sm text-slate-400">This game is made purely for fun and entertainment.</p>
+    <button type="button" data-close class="mt-5 w-full rounded-lg bg-red-600 py-3 font-semibold text-white hover:bg-red-500">বন্ধ করুন</button>
+  </div>
+</div>
+
+<!-- MODAL: Welcome (replaces alert(), which the viewer blocks) -->
+<div id="welcomeModal" hidden role="dialog" aria-modal="true" aria-labelledby="welcomeTitle"
+     class="overlay fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm font-bn">
+  <div class="w-full max-w-md rounded-3xl border-2 border-amber-500 bg-[#05294f] p-6 text-center text-white shadow-2xl">
+    <i class="fa-solid fa-star text-3xl text-yellow-300" aria-hidden="true"></i>
+    <h2 id="welcomeTitle" class="mt-3 text-xl font-bold">স্বাগতম, Adjutant <span id="welcomeName" class="text-yellow-300"></span>!</h2>
+    <p class="mt-2 text-sky-100">আপনার নিয়োগ সম্পন্ন হয়েছে। <span id="welcomeGender" class="font-semibold text-yellow-300"></span></p>
+    <p class="mt-1 text-sm text-sky-200">Total appointed Adjutants: <span id="welcomeCount" class="font-bold tabular-nums text-yellow-300"></span></p>
+    <button type="button" data-close class="mt-5 w-full rounded-2xl bg-amber-400 py-3 text-lg font-bold text-slate-900 hover:bg-amber-300">ঠিক আছে</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  /* The logo is read from logo.png, placed in the same folder as this page.
+     The emblems below only show while that file is missing. */
+  var LOGO_SVG = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#0ea5e9'/><stop offset='1' stop-color='#1e3a8a'/></linearGradient></defs><rect width='200' height='200' fill='url(#g)'/><circle cx='100' cy='100' r='84' fill='none' stroke='#fcd34d' stroke-width='4'/><polygon fill='#fcd34d' points='100,56 110.6,85.4 141.9,86.4 117.1,105.6 125.9,135.6 100,118 74.1,135.6 82.9,105.6 58.1,86.4 89.4,85.4'/><text x='100' y='162' text-anchor='middle' font-size='13' font-family='Georgia,serif' font-weight='bold' letter-spacing='2' fill='#ffffff'>ADJUTANT</text></svg>";
+  var AVATAR_SVG = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='#1e3a8a'/><text x='50' y='64' text-anchor='middle' font-size='42' font-family='Georgia,serif' font-weight='bold' fill='#fcd34d'>MI</text></svg>";
+  var logo = document.getElementById('logoImg');
+  logo.addEventListener('error', function onLogoError() {
+    logo.removeEventListener('error', onLogoError);
+    logo.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(LOGO_SVG);
+  });
+  logo.src = 'logo.png';
+  document.getElementById('avatarImg').src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(AVATAR_SVG);
+
+  /* Counter, stored in this browser only */
+  var KEY = 'adjutantCount';
+  var memCount = 0;
+  function readCount() {
+    try {
+      var v = parseInt(localStorage.getItem(KEY), 10);
+      memCount = (isNaN(v) || v < 0) ? 0 : v;
+    } catch (e) { /* storage unavailable: keep the in-memory value */ }
+    return memCount;
+  }
+  function writeCount(n) {
+    memCount = n;
+    try { localStorage.setItem(KEY, String(n)); } catch (e) { /* ignore */ }
+  }
+  var counterEl = document.getElementById('counter');
+  function fmt(n) { return Number(n).toLocaleString('en-US'); }
+  function renderCount() { counterEl.textContent = fmt(readCount()); }
+  renderCount();
+
+  /* Modals */
+  var openEl = null;
+  var lastFocus = null;
+  function closeModal() {
+    if (!openEl) return;
+    openEl.hidden = true;
+    openEl = null;
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+    lastFocus = null;
+  }
+  function openModal(id) {
+    var m = document.getElementById(id);
+    if (!m) return;
+    closeModal();
+    lastFocus = document.activeElement;
+    m.hidden = false;
+    openEl = m;
+    var btn = m.querySelector('[data-close]');
+    if (btn) btn.focus();
+  }
+
+  /* Step notification: visible for 3 seconds, then it leaves */
+  var STEPS = [
+    { title: 'ধাপ ১: কলেজ বাছাই',            text: 'আপনার পছন্দের ৯টি বিএএফ শাহীন কলেজের মধ্যে একটি বেছে নিন।' },
+    { title: 'ধাপ ২: নিয়োগপত্র',             text: 'কলেজ বাছাই শেষে আপনার অ্যাডজুট্যান্ট নিয়োগপত্র হাতে পাবেন।' },
+    { title: 'ধাপ ৩: অধ্যক্ষের সাথে পরিচয়',  text: 'অধ্যক্ষের সাথে দেখা করে নিজের পরিচয় দিন এবং দায়িত্ব বুঝে নিন।' },
+    { title: 'ধাপ ৪: অফিসে ১০ টা কাজ',        text: 'অফিসে আপনাকে ১০টি গুরুত্বপূর্ণ দায়িত্ব সম্পন্ন করতে হবে।' },
+    { title: 'ধাপ ৫: আপনার শাহীন',            text: 'সব কাজ শেষে নিজের স্বপ্নের শাহীন গড়ে তুলুন।' }
+  ];
+  var toast = document.getElementById('toast');
+  var toastTitle = document.getElementById('toastTitle');
+  var toastText = document.getElementById('toastText');
+  var showTimer = null, hideTimer = null;
+  function showToast(title, text) {
+    clearTimeout(showTimer);
+    clearTimeout(hideTimer);
+    toastTitle.textContent = title;
+    toastText.textContent = text;
+    toast.hidden = false;
+    void toast.offsetWidth;
+    toast.classList.add('show');
+    showTimer = setTimeout(function () {
+      toast.classList.remove('show');
+      hideTimer = setTimeout(function () { toast.hidden = true; }, 300);
+    }, 3000);
+  }
+  var stepBtns = document.querySelectorAll('.step');
+  function selectStep(btn) {
+    var i = parseInt(btn.getAttribute('data-step'), 10);
+    for (var k = 0; k < stepBtns.length; k++) stepBtns[k].setAttribute('aria-pressed', stepBtns[k] === btn ? 'true' : 'false');
+    if (STEPS[i]) showToast(STEPS[i].title, STEPS[i].text);
+  }
+
+  document.addEventListener('click', function (e) {
+    var step = e.target.closest('.step');
+    if (step) { selectStep(step); return; }
+    var opener = e.target.closest('[data-open]');
+    if (opener) { openModal(opener.getAttribute('data-open')); return; }
+    if (e.target.closest('[data-close]')) { closeModal(); return; }
+    if (openEl && e.target === openEl) closeModal();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  /* Name + gender entry */
+  var form = document.getElementById('startForm');
+  var input = document.getElementById('playerName');
+  var err = document.getElementById('formError');
+  function showError(msg) {
+    err.textContent = msg;
+    err.hidden = false;
+  }
+  function clearError() {
+    err.hidden = true;
+    input.removeAttribute('aria-invalid');
+  }
+  input.addEventListener('input', clearError);
+  form.addEventListener('change', function (e) {
+    if (e.target && e.target.name === 'gender') clearError();
+  });
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = input.value.replace(/\s+/g, ' ').trim();
+    var picked = form.querySelector('input[name="gender"]:checked');
+    if (name.length < 2) {
+      showError('অনুগ্রহ করে আপনার নাম লিখুন (কমপক্ষে ২ অক্ষর)।');
+      input.setAttribute('aria-invalid', 'true');
+      input.focus();
+      return;
+    }
+    if (!picked) {
+      showError('অনুগ্রহ করে ছেলে নাকি মেয়ে, তা বেছে নিন।');
+      return;
+    }
+    clearError();
+    var gender = picked.value;
+    var n = readCount() + 1;
+    writeCount(n);
+    renderCount();
+    try { localStorage.setItem('adjutantPlayer', JSON.stringify({ name: name, gender: gender })); } catch (ex) { /* ignore */ }
+    document.getElementById('welcomeName').textContent = name;
+    document.getElementById('welcomeGender').textContent = gender === 'male' ? '(ছেলে Adjutant)' : '(মেয়ে Adjutant)';
+    document.getElementById('welcomeCount').textContent = fmt(n);
+    input.value = '';
+    picked.checked = false;
+    openModal('welcomeModal');
+  });
+})();
+</script>
+
+</body></html>
